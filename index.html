@@ -1,317 +1,708 @@
 <!DOCTYPE html>
-<!--
-  Demo widget for the Brik Housing opportunity — Puzzel Agent Application.
-  Shows what an agent sees from BRIKHousing (the customer's Dynamics 365
-  housing system) when a damp & mould report comes in, alongside the
-  Awaab's Law compliance deadlines.
-
-  This is a sales-engineering DEMO: all tenant data is invented, and the
-  "system" actions (log inspection, etc) simulate a write-back rather than
-  calling BRIKHousing's real API. A production build would replace those
-  with real calls to the customer's Dynamics 365 environment and wire the
-  dial/transfer/SMS buttons to the Puzzel Widget API.
-  Docs: https://help.puzzel.com/product-documents/user-guide/puzzel-contact-centre/puzzel-administration-portal/widgets/widget-and-widget-api
-
-  DEMO NUMBER: all dial / transfer / consult buttons ring 07873 616744.
--->
-<html lang="en-GB">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brik Housing — damp &amp; mould triage</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<title>TeamSport | Customer Enquiry Simulator (Agent Demo)</title>
 <style>
-  :root {
-    --primary: #7e4797; --primary-dark: #462853; --primary-light: #cec1d4; --primary-fair: #f4e5fc;
-    --customer: #1f7a5c; --customer-dark: #15523d; --customer-fair: #e3f3ed;
-    --g50: #f4f4f6; --g100: #e7e8eb; --g400: #8f93a3; --g600: #0c1436;
-    --text: #0c1436; --text-2: #5c6278; --surface: #ffffff; --canvas: #fbfbfd; --divider: #e7e8eb;
-    --ok: #33c4b3; --ok-bg: #c0ede7; --ok-text: #248b7f;
-    --warn: #ff9903; --warn-bg: #ffdfb1; --warn-text: #b56d02;
-    --bad: #ff375b; --bad-bg: #ffc1cc; --bad-text: #b52741;
-    --radius: 8px; --font: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  :root{
+    --black:#111111;
+    --navy:#0b1230;
+    --navy-deep:#0f1b3f;
+    --navy-text:#13224b;
+    --orange:#f5a623;
+    --pink:#e6186b;
+    --blue:#2d8eff;
+    --teal:#19b3a6;
+    --green:#1a9c5a;
+    --red:#d1392b;
+    --border:#e2e5ea;
+    --grey-bg:#f4f6f9;
   }
-  * { box-sizing: border-box; }
-  body { margin: 0; font-family: var(--font); color: var(--text); background: var(--canvas); font-size: 14px; }
-  .widget { max-width: 1024px; margin: 0 auto; }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    color:#1a1a1a;
+    background:#fff;
+  }
+  .utility-bar{
+    background:var(--black);
+    color:#fff;
+    font-size:12px;
+    font-weight:600;
+    display:flex;
+    gap:28px;
+    padding:9px 24px;
+    letter-spacing:.3px;
+  }
+  .utility-bar span{ opacity:.9; }
+  nav.main-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 24px;
+    border-bottom:1px solid var(--border);
+  }
+  .wordmark{
+    font-style:italic;
+    font-weight:800;
+    font-size:24px;
+    letter-spacing:-0.5px;
+    color:#0a0a0a;
+  }
+  .nav-links{
+    display:flex;
+    gap:28px;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.3px;
+  }
+  .nav-links a{ color:#0a0a0a; text-decoration:none; }
+  .nav-right{
+    font-size:13px;
+    font-weight:700;
+  }
+  .nav-right a{ color:var(--blue); text-decoration:none; }
 
-  .header { background: var(--customer); color: #fff; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
-  .header .title { font-weight: 500; font-size: 16px; }
-  .header .subtitle { font-size: 12px; opacity: 0.85; margin-top: 2px; }
-  .header .tab-info { font-size: 12px; background: rgba(255,255,255,0.18); padding: 4px 10px; border-radius: 6px; }
+  .hero{
+    background:linear-gradient(120deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:#fff;
+    padding:64px 24px 48px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero h1{
+    font-size:40px;
+    font-weight:800;
+    line-height:1.15;
+    margin:0 0 6px;
+    text-transform:uppercase;
+  }
+  .hero h1 .accent{ color:var(--orange); }
+  .hero .underline{
+    width:90px; height:4px;
+    background:linear-gradient(90deg, var(--pink), var(--orange));
+    margin:18px 0;
+  }
+  .hero p{ max-width:520px; font-size:15px; color:#cfd6e8; line-height:1.6; }
 
-  .layout { display: flex; gap: 16px; padding: 16px; align-items: flex-start; flex-wrap: wrap; }
-  .rail { flex: 0 0 580px; display: flex; flex-direction: row; gap: 12px; flex-wrap: wrap; }
-  .rail > .card { flex: 1 1 270px; }
-  .main { flex: 1 1 500px; min-width: 300px; }
+  .feature-strip{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    background:var(--navy-deep);
+    border-radius:10px;
+    padding:20px;
+    margin-top:28px;
+    max-width:620px;
+  }
+  .feature{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+    color:#fff;
+  }
+  .feature .dot{
+    width:40px;height:40px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;flex-shrink:0;color:#fff;
+  }
+  .feature:nth-child(1) .dot{ background:var(--teal); }
+  .feature:nth-child(2) .dot{ background:var(--blue); }
+  .feature:nth-child(3) .dot{ background:var(--orange); }
+  .feature:nth-child(4) .dot{ background:var(--pink); }
+  .feature .ftitle{ font-weight:700; font-size:13px; }
+  .feature .fsub{ font-size:11px; color:#aeb8d0; }
 
-  .card { background: var(--surface); border: 1px solid var(--divider); border-radius: var(--radius); padding: 14px; }
-  .card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-weight: 500; font-size: 14px; }
-  .card-source { margin-left: auto; font-size: 11px; color: var(--text-2); font-weight: 400; }
+  /* ---- Agent simulator section ---- */
+  .sim-section{
+    max-width:1150px;
+    margin:56px auto;
+    padding:0 24px;
+  }
+  .sim-header h2{
+    color:var(--navy-text);
+    font-size:26px;
+    margin-bottom:4px;
+  }
+  .sim-header p{
+    color:#555;
+    font-size:14px;
+    margin-bottom:24px;
+  }
+  .scenario-tabs{
+    display:flex;
+    gap:10px;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+  }
+  .scenario-tab{
+    border:1px solid var(--border);
+    background:#fff;
+    padding:10px 16px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    color:var(--navy-text);
+  }
+  .scenario-tab.active{
+    background:var(--navy-text);
+    color:#fff;
+    border-color:var(--navy-text);
+  }
 
-  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary-fair); color: var(--primary-dark); display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 13px; flex-shrink: 0; }
-  .contact-row { display: flex; align-items: center; gap: 10px; }
-  .contact-name { font-weight: 500; font-size: 15px; margin: 0; }
-  .contact-sub { font-size: 12px; color: var(--text-2); margin: 2px 0 0; }
-  .tags { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-  .pill { font-size: 11px; padding: 3px 9px; border-radius: 999px; font-weight: 500; }
-  .pill.warn { background: var(--warn-bg); color: var(--warn-text); }
-  .pill.bad { background: var(--bad-bg); color: var(--bad-text); }
-  .pill.ok { background: var(--ok-bg); color: var(--ok-text); }
+  .sim-layout{
+    display:grid;
+    grid-template-columns:300px 1fr;
+    gap:20px;
+    align-items:start;
+  }
+  .context-panel{
+    background:var(--grey-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:20px;
+  }
+  .context-panel h3{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:var(--navy-text);
+    margin:0 0 14px;
+  }
+  .context-row{
+    font-size:13px;
+    margin-bottom:12px;
+    line-height:1.4;
+  }
+  .context-row .label{
+    display:block;
+    font-weight:700;
+    color:#555;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    margin-bottom:2px;
+  }
+  .badge{
+    display:inline-block;
+    background:var(--blue);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:12px;
+    margin-bottom:10px;
+  }
+  .customer-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-bottom:16px;
+  }
+  .customer-card .label{
+    display:block;
+    font-weight:700;
+    color:#555;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    margin-bottom:4px;
+  }
+  .customer-name{
+    font-weight:700;
+    font-size:14px;
+    color:var(--navy-text);
+    margin-bottom:4px;
+  }
+  .customer-line{
+    font-size:12.5px;
+    color:#333;
+    margin-bottom:2px;
+  }
 
-  .phone-row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; font-size: 13px; }
-  .phone-ops button { margin-left: 4px; }
+  /* ---- System / booking mock-up panel ---- */
+  .system-panel{
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    background:#fff;
+  }
+  .system-head{
+    background:var(--black);
+    color:#fff;
+    padding:14px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+    font-weight:700;
+  }
+  .system-head .sys-tag{
+    background:#333;
+    color:#cfd6e8;
+    font-size:10.5px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:12px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+  }
+  .system-body{
+    padding:22px;
+  }
+  .record-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 24px;
+    margin-bottom:18px;
+  }
+  .record-field{
+    padding:10px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .record-field .label{
+    display:block;
+    font-size:10.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    color:#888;
+    margin-bottom:3px;
+  }
+  .record-field .value{
+    font-size:14px;
+    font-weight:600;
+    color:#1a1a1a;
+  }
+  .status-pill{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:12px;
+  }
+  .status-pill.pending{ background:#fff3cd; color:#8a6400; }
+  .status-pill.paid{ background:#e3f6ea; color:var(--green); }
+  .status-pill.quote{ background:#e8f0ff; color:var(--blue); }
 
-  button { font-family: var(--font); font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: var(--radius); border: 1px solid var(--g100); background: var(--g50); color: var(--text); cursor: pointer; }
-  button:hover { background: var(--g100); }
-  button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
-  button.primary:hover { background: var(--primary-dark); }
-  button.icon-btn { padding: 6px 8px; font-size: 12px; }
+  table.amend-table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0 20px;
+    font-size:13px;
+  }
+  table.amend-table th, table.amend-table td{
+    text-align:left;
+    padding:10px 12px;
+    border-bottom:1px solid var(--border);
+  }
+  table.amend-table th{
+    background:var(--grey-bg);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    color:#666;
+  }
+  table.amend-table td.num{ text-align:right; }
+  table.amend-table tr.total td{ font-weight:700; }
+  .refund-banner{
+    background:#e3f6ea;
+    border:1px solid #bfe8cf;
+    color:var(--green);
+    border-radius:8px;
+    padding:12px 16px;
+    font-size:14px;
+    font-weight:700;
+    margin-top:4px;
+  }
+  .action-row{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .action-row button{
+    border:none;
+    border-radius:8px;
+    padding:10px 18px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .btn-primary{ background:var(--blue); color:#fff; }
+  .btn-outline{ background:#fff; border:1px solid var(--border) !important; color:var(--navy-text); }
 
-  .directory-entry { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--divider); font-size: 13px; }
-  .directory-entry:last-child { border-bottom: none; }
-  .directory-entry .name { font-weight: 500; }
-  .directory-entry .detail { font-size: 11px; color: var(--text-2); }
+  /* party quote */
+  .package-card{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:14px 16px;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:var(--grey-bg);
+  }
+  .package-card .pname{ font-weight:700; font-size:13.5px; color:var(--navy-text); }
+  .package-card .pdesc{ font-size:12px; color:#666; margin-top:2px; }
+  .package-card .pprice{ font-weight:700; font-size:14px; color:var(--navy-text); white-space:nowrap; margin-left:16px; }
 
-  .tabs { display: flex; gap: 18px; border-bottom: 1px solid var(--divider); margin-bottom: 14px; }
-  .tab-btn { background: none; border: none; padding: 8px 0; font-weight: 500; color: var(--text-2); border-bottom: 2px solid transparent; border-radius: 0; }
-  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+  /* vouchers */
+  .voucher-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:22px;
+  }
+  .voucher-card{
+    border-radius:10px;
+    padding:16px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+  }
+  .voucher-card:nth-child(1){ background:linear-gradient(120deg, var(--navy), var(--navy-deep)); }
+  .voucher-card:nth-child(2){ background:linear-gradient(120deg, var(--pink), #ad0f4e); }
+  .voucher-card:nth-child(3){ background:linear-gradient(120deg, var(--orange), #c97d00); }
+  .voucher-card:nth-child(4){ background:linear-gradient(120deg, var(--teal), #0f7d73); }
+  .voucher-card .vname{ font-weight:800; font-size:14px; margin-bottom:4px; }
+  .voucher-card .vdesc{ font-size:12px; opacity:.9; margin-bottom:10px; }
+  .voucher-card .vprice{ font-size:18px; font-weight:800; }
+  .voucher-card .vcode{ font-size:10.5px; opacity:.75; margin-top:8px; letter-spacing:.5px; }
 
-  table.fields { width: 100%; border-collapse: collapse; margin-bottom: 4px; }
-  table.fields td { padding: 7px 0; font-size: 13px; border-bottom: 1px solid var(--divider); }
-  table.fields td:first-child { color: var(--text-2); width: 42%; }
-  table.fields tr:last-child td { border-bottom: none; }
+  .tc-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .tc-list li{
+    font-size:13px;
+    line-height:1.5;
+    padding:9px 0 9px 22px;
+    border-bottom:1px solid var(--border);
+    position:relative;
+    color:#333;
+  }
+  .tc-list li::before{
+    content:"✓";
+    position:absolute;
+    left:0;
+    color:var(--teal);
+    font-weight:800;
+  }
+  .tc-note{
+    margin-top:12px;
+    font-size:11.5px;
+    color:#888;
+    font-style:italic;
+  }
 
-  .clock-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--divider); }
-  .clock-row:last-child { border-bottom: none; }
-  .clock-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .clock-dot.ok { background: var(--ok); }
-  .clock-dot.warn { background: var(--warn); }
-  .clock-dot.bad { background: var(--bad); }
-  .clock-label { font-weight: 500; font-size: 13px; }
-  .clock-sub { font-size: 11px; color: var(--text-2); }
-  .clock-deadline { margin-left: auto; font-size: 12px; font-weight: 600; }
-  .clock-deadline.ok { color: var(--ok-text); }
-  .clock-deadline.warn { color: var(--warn-text); }
-  .clock-deadline.bad { color: var(--bad-text); }
+  footer{
+    background:var(--black);
+    color:#aaa;
+    font-size:12px;
+    text-align:center;
+    padding:24px;
+    margin-top:40px;
+  }
+  .demo-flag{
+    background:#fff3cd;
+    border-top:1px solid #e6c860;
+    border-bottom:1px solid #e6c860;
+    color:#5c4a00;
+    font-size:12.5px;
+    text-align:center;
+    padding:8px;
+  }
 
-  .timeline-item { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--divider); font-size: 13px; }
-  .timeline-item:last-child { border-bottom: none; }
-  .timeline-date { color: var(--text-2); font-size: 11px; min-width: 70px; }
-  .timeline-title { font-weight: 500; }
-  .timeline-detail { color: var(--text-2); font-size: 12px; margin-top: 2px; }
-
-  .actions-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-
-  .nba { background: linear-gradient(90deg, var(--primary-fair), #fbf7fe); border-radius: var(--radius); padding: 14px 16px; margin: 0 16px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  .nba-text { font-weight: 500; font-size: 13px; max-width: 420px; }
-  .nba-text .nba-sub { font-weight: 400; color: var(--text-2); font-size: 12px; margin-top: 2px; }
-
-  .toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--g600); color: #fff; padding: 10px 18px; border-radius: var(--radius); font-size: 13px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
-  .toast.show { opacity: 1; }
+  @media (max-width:800px){
+    .sim-layout{ grid-template-columns:1fr; }
+    .feature-strip{ grid-template-columns:1fr; }
+    .record-grid{ grid-template-columns:1fr; }
+    .voucher-grid{ grid-template-columns:1fr; }
+  }
 </style>
 </head>
 <body>
 
-<div class="widget">
+<div class="demo-flag">Internal Puzzel demo — simulated TeamSport page for agent-response training. Not the live TeamSport website. Booking records, pricing and voucher T&amp;Cs shown are illustrative example data only.</div>
 
-  <div class="header">
-    <div>
-      <div class="title">Damp &amp; mould triage</div>
-      <div class="subtitle">Brik Housing · BRIKHousing (Dynamics 365)</div>
-    </div>
-    <div class="tab-info">Case DM-00482</div>
-  </div>
-
-  <div class="layout">
-
-    <div class="rail">
-      <div class="card">
-        <div class="card-head"><span class="card-source" style="margin-left:0">BRIKHousing</span></div>
-        <div class="contact-row">
-          <div class="avatar">AS</div>
-          <div>
-            <p class="contact-name">Andrew Smith</p>
-            <p class="contact-sub">14 Thornfield Court, Flat 3</p>
-          </div>
-        </div>
-        <div class="tags">
-          <span class="pill warn">Awaab's Law case</span>
-          <span class="pill ok">Tenant since 2019</span>
-        </div>
-        <label style="display:flex; align-items:center; gap:6px; margin-top:10px; font-size:12px; color:var(--text-2);">
-          <input type="checkbox" checked style="width:14px; height:14px;">
-          Vulnerability
-        </label>
-        <div class="phone-row">
-          <span>Mobile 07873 616744</span>
-          <span class="phone-ops">
-            <button class="icon-btn" onclick="dial('Andrew Smith')">Dial</button>
-            <button class="icon-btn" onclick="toast('SMS dialog opened, pre-filled')">SMS</button>
-          </span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-head">Specialist lines <span class="card-source">Puzzel</span></div>
-        <div class="directory-entry">
-          <div><div class="name">Repairs team</div><div class="detail">Reactive repairs queue</div></div>
-          <div>
-            <button class="icon-btn" onclick="dial('Repairs team')">Dial</button>
-            <button class="icon-btn" onclick="toast('Call transferred to Repairs team')">Transfer</button>
-          </div>
-        </div>
-        <div class="directory-entry">
-          <div><div class="name">D&amp;M surveyor</div><div class="detail">On-call surveyor</div></div>
-          <div>
-            <button class="icon-btn" onclick="dial('D&M surveyor')">Dial</button>
-            <button class="icon-btn" onclick="toast('Consultation call started')">Consult</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="main">
-
-      <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('detail', this)">Case detail</button>
-        <button class="tab-btn" onclick="showTab('clock', this)">Awaab's Law clock</button>
-        <button class="tab-btn" onclick="showTab('history', this)">History</button>
-      </div>
-
-      <div id="tab-detail" class="tab-panel active">
-        <div class="card">
-          <div class="card-head">Case DM-00482 <span class="card-source">BRIKHousing</span></div>
-          <table class="fields">
-            <tr><td>Hazard category</td><td>Damp and mould, bedroom ceiling</td></tr>
-            <tr><td>Stage</td><td id="stage-value"><span class="pill warn">Investigation</span></td></tr>
-            <tr><td>Reported</td><td>18 Oct 2026, via resident app</td></tr>
-            <tr><td>Flagged by</td><td>AI smart assistant (keyword + tone)</td></tr>
-            <tr><td>Property</td><td>Thornfield Court, Flat 3</td></tr>
-          </table>
-          <div class="actions-row">
-            <button class="primary" onclick="logInspection()">Log inspection</button>
-            <button onclick="toast('Case escalated to Environmental Health lead')">Escalate case</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="tab-clock" class="tab-panel">
-        <div class="card">
-          <div class="card-head">Awaab's Law deadlines <span class="card-source">BRIKHousing</span></div>
-          <div class="clock-row">
-            <div class="clock-dot warn"></div>
-            <div>
-              <div class="clock-label">Investigate hazard</div>
-              <div class="clock-sub">Must start within 14 days of report</div>
-            </div>
-            <div class="clock-deadline warn">Due in 9 days</div>
-          </div>
-          <div class="clock-row">
-            <div class="clock-dot bad"></div>
-            <div>
-              <div class="clock-label">Start repair</div>
-              <div class="clock-sub">Must start within 7 days of report</div>
-            </div>
-            <div class="clock-deadline bad">Due in 2 days</div>
-          </div>
-          <div class="clock-row">
-            <div class="clock-dot ok"></div>
-            <div>
-              <div class="clock-label">Emergency repair window</div>
-              <div class="clock-sub">24 hours, not triggered on this case</div>
-            </div>
-            <div class="clock-deadline ok">Not applicable</div>
-          </div>
-        </div>
-      </div>
-
-      <div id="tab-history" class="tab-panel">
-        <div class="card">
-          <div class="card-head">Case history <span class="card-source">BRIKHousing</span></div>
-          <div class="timeline-item">
-            <div class="timeline-date">18 Oct</div>
-            <div>
-              <div class="timeline-title">Case created</div>
-              <div class="timeline-detail">AI smart assistant flagged mention of mould in resident app message</div>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">19 Oct</div>
-            <div>
-              <div class="timeline-title">Acknowledgement sent</div>
-              <div class="timeline-detail">Automated acknowledgement sent to tenant</div>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">21 Oct</div>
-            <div>
-              <div class="timeline-title">Tenant called in</div>
-              <div class="timeline-detail">Asked for an update on inspection date (this call)</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="nba">
-    <div class="nba-text">
-      7-day repair-start deadline is in 2 days.
-      <div class="nba-sub">Book the surveyor now to stay inside Awaab's Law.</div>
-    </div>
-    <div class="actions-row" style="margin-top:0">
-      <button class="primary" onclick="logInspection()">Log inspection</button>
-      <button onclick="dial('Repairs team')">Call repairs team</button>
-    </div>
-  </div>
-
+<div class="utility-bar">
+  <span>🎄 CHRISTMAS PARTIES</span>
+  <span>🏆 BIKC</span>
+  <span>🏁 FASTTRACK</span>
+  <span>FOOD</span>
+  <span>CORPORATE</span>
+  <span>FAQS</span>
+  <span>GIFT VOUCHERS</span>
 </div>
 
-<div id="toast" class="toast"></div>
+<nav class="main-nav">
+  <div class="wordmark">TeamSport</div>
+  <div class="nav-links">
+    <a href="#">LOCATIONS</a>
+    <a href="#">EXPERIENCES</a>
+    <a href="#">MEMBERSHIP</a>
+  </div>
+  <div class="nav-right">CALL US <a href="tel:01252732300">01252 732300</a> OR <a href="#">CONTACT US</a></div>
+</nav>
+
+<section class="hero">
+  <h1>THE <span class="accent">ULTIMATE</span><br>INDOOR KARTING<br>EXPERIENCE</h1>
+  <div class="underline"></div>
+  <p>Agent enquiry simulator — see what the booking system shows the agent for each customer scenario.</p>
+
+  <div class="feature-strip">
+    <div class="feature"><div class="dot">📍</div><div><div class="ftitle">38 Tracks Nationwide</div><div class="fsub">UK's largest indoor karting company</div></div></div>
+    <div class="feature"><div class="dot">⭐</div><div><div class="ftitle">4.5/5 Average Review</div><div class="fsub">50,000+ reviews every year</div></div></div>
+    <div class="feature"><div class="dot">🎉</div><div><div class="ftitle">Perfect For Parties</div><div class="fsub">Birthdays | Corporate | Stag &amp; Hen</div></div></div>
+    <div class="feature"><div class="dot">🏁</div><div><div class="ftitle">Race Like A Pro</div><div class="fsub">State-of-the-art tracks</div></div></div>
+  </div>
+</section>
+
+<section class="sim-section">
+  <div class="sim-header">
+    <h2>Customer Enquiry Test Scenarios</h2>
+    <p>Pick a scenario to see the customer's enquiry alongside what the booking system shows the agent.</p>
+  </div>
+
+  <div class="scenario-tabs" id="scenarioTabs"></div>
+
+  <div class="sim-layout">
+    <div class="context-panel" id="contextPanel"></div>
+    <div class="system-panel" id="systemPanel"></div>
+  </div>
+</section>
+
+<footer>
+  © 2026 TeamSport — simulated page for internal agent training purposes only
+</footer>
 
 <script>
-  function showTab(name, btn) {
-    document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
-    document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
-    document.getElementById('tab-' + name).classList.add('active');
-    btn.classList.add('active');
+const scenarios = [
+  {
+    id: 1,
+    tab: "01 · Booking amendment",
+    title: "Existing booking amendment — Farnborough",
+    channel: "Live Chat · Sales Team",
+    customer: { name: "Andrew Smith", phone: "07873 616744", email: "andrew718smith@gmail.com" },
+    context: [
+      { label: "Venue", value: "Farnborough" },
+      { label: "Booking date", value: "This Saturday" },
+      { label: "Request", value: "Reduce number of drivers on an existing booking" },
+      { label: "Reference", value: "Customer has provided a booking reference" }
+    ],
+    opening: "We have fewer people coming now. Can you reduce the booking from the original number of drivers, and can I get my money back?",
+    tip: "Check the booking reference, confirm the new driver count, and explain TeamSport's amendment/refund policy for reduced numbers before processing.",
+    type: "booking",
+    system: {
+      reference: "TS-FNB-48213",
+      venue: "Farnborough",
+      date: "Saturday 31 Oct 2026",
+      time: "14:00",
+      sessionType: "Ultimate Race Experience",
+      originalDrivers: 10,
+      amendedDrivers: 6,
+      pricePerDriver: 35.00,
+      paymentStatus: "Paid in full · Card ending 4471",
+      bookingStatus: "Amendment requested"
+    }
+  },
+  {
+    id: 2,
+    tab: "02 · Kids party enquiry",
+    title: "General sales enquiry — Kids Party",
+    channel: "Web Enquiry Form · Sales Team",
+    customer: { name: "Andrew Smith", phone: "07873 616744", email: "andrew718smith@gmail.com" },
+    context: [
+      { label: "Children", value: "8–10 children, ages 8–12" },
+      { label: "Timing", value: "Sometime in November" },
+      { label: "Needs", value: "Karting + food package pricing" },
+      { label: "Stage", value: "Deciding on a date once she has pricing" }
+    ],
+    opening: "I'm looking for a karting party in November for between 8–10 children aged 8–12. What karting and food packages do you offer and how much is it?",
+    tip: "Share available party/karting packages and food options for that age group, give indicative pricing for 8–10 children, and offer to check specific November dates.",
+    type: "party",
+    system: {
+      reference: "TS-QUOTE-91027",
+      venue: "To be confirmed",
+      date: "November 2026 (date TBC)",
+      children: "9 children (ages 8–12)",
+      status: "quote",
+      karting: [
+        { name: "Mini Racers Party Package", desc: "2 x karting sessions, age 8+, includes trophy presentation", price: "£22.99 pp" },
+        { name: "Junior Grand Prix Package", desc: "Qualifying + Grid Start race, podium presentation", price: "£26.99 pp" }
+      ],
+      food: [
+        { name: "Pizza & Juice Party Box", desc: "Pizza slices, juice carton, snack", price: "£9.50 pp" },
+        { name: "Hot Dog & Drink Package", desc: "Hot dog, drink, dessert", price: "£8.50 pp" },
+        { name: "Sharing Party Platter", desc: "Mixed sharing platter for the group", price: "£60.00 flat" }
+      ]
+    }
+  },
+  {
+    id: 3,
+    tab: "03 · Voucher T&Cs",
+    title: "Voucher terms & conditions",
+    channel: "Email · Customer Service",
+    customer: { name: "Andrew Smith", phone: "07873 616744", email: "andrew718smith@gmail.com" },
+    context: [
+      { label: "Item", value: "TeamSport voucher" },
+      { label: "Need", value: "Confirm terms & conditions before booking" },
+      { label: "Question", value: "When can the voucher be used?" }
+    ],
+    opening: "Can you confirm the terms and conditions of my voucher and when I can use it?",
+    tip: "Confirm validity period, which venues/experiences it covers, and any blackout dates — ask for the voucher code if you need to check specifics.",
+    type: "voucher",
+    system: {
+      vouchers: [
+        { name: "Race Experience Voucher", desc: "Single Ultimate Race Experience session, any UK venue", price: "£35.00", code: "e.g. TSRACE-XXXXXX" },
+        { name: "Open Value Gift Card", desc: "Redeemable against any experience or food & drink", price: "£25 / £50 / £100", code: "e.g. TSGIFT-XXXXXX" },
+        { name: "Kids Party Voucher", desc: "Covers karting session, valid for party bookings", price: "From £22.99 pp", code: "e.g. TSPARTY-XXXXXX" },
+        { name: "Membership Voucher", desc: "3 or 6 month TeamSport membership", price: "From £19.99 /mo", code: "e.g. TSMEM-XXXXXX" }
+      ],
+      terms: [
+        "Valid for 12 months from the date of purchase, unless otherwise stated on the voucher.",
+        "Bookings must be made in advance online or by phone — subject to track availability.",
+        "Vouchers cannot be exchanged, refunded or redeemed for cash, in full or in part.",
+        "Valid at all participating TeamSport UK venues unless the voucher specifies a single location.",
+        "One voucher may be redeemed per booking unless the voucher states otherwise.",
+        "Lost, stolen or expired vouchers cannot be replaced or extended.",
+        "Vouchers cannot be combined with other offers, discounts or promotions."
+      ]
+    }
   }
-  function toast(msg) {
-    var t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(function () { t.classList.remove('show'); }, 2200);
-  }
-  function dial(name) {
-    // Demo only. In production this calls the Puzzel Widget API's
-    // call.outboundCallExtended with the number below.
-    toast('Dialling ' + name + ' (07873 616744)');
-  }
-  function logInspection() {
-    toast('Inspection logged in BRIKHousing');
-    document.getElementById('stage-value').innerHTML = '<span class="pill ok">Inspection booked</span>';
-  }
+];
 
-  // ---------------------------------------------------------------------
-  // PUZZEL WIDGET API (enable once hosted and registered in Puzzel Admin)
-  // https://help.puzzel.com/product-documents/user-guide/puzzel-contact-centre/puzzel-administration-portal/widgets/widget-and-widget-api
-  //
-  // let port;
-  // window.addEventListener('message', function (message) {
-  //   if (!port) { port = message.ports[0]; port.onmessage = handlePuzzelMessage; }
-  // });
-  // function handlePuzzelMessage(message) {
-  //   // Use message.data (e.g. the caller's number) to look up the real
-  //   // case in BRIKHousing's Dynamics 365 environment via its API, and
-  //   // replace the static fields above with the live record.
-  // }
-  // ---------------------------------------------------------------------
+let current = scenarios[0];
+
+function renderTabs(){
+  const wrap = document.getElementById('scenarioTabs');
+  wrap.innerHTML = '';
+  scenarios.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'scenario-tab' + (s.id === current.id ? ' active' : '');
+    btn.textContent = s.tab;
+    btn.onclick = () => { current = s; renderAll(); };
+    wrap.appendChild(btn);
+  });
+}
+
+function renderContext(){
+  const panel = document.getElementById('contextPanel');
+  const customerBlock = current.customer ?
+    '<div class="customer-card">' +
+      '<span class="label">Customer</span>' +
+      '<div class="customer-name">' + current.customer.name + '</div>' +
+      '<div class="customer-line">📞 ' + current.customer.phone + '</div>' +
+      '<div class="customer-line">✉️ ' + current.customer.email + '</div>' +
+    '</div>' : '';
+  panel.innerHTML = '<span class="badge">' + current.channel + '</span><h3>' + current.title + '</h3>' +
+    customerBlock +
+    current.context.map(c => '<div class="context-row"><span class="label">' + c.label + '</span>' + c.value + '</div>').join('') +
+    '<div class="context-row" style="margin-top:4px;"><span class="label">Customer message</span><em>&ldquo;' + current.opening + '&rdquo;</em></div>' +
+    '<div class="context-row"><span class="label">Resolution tip</span>' + current.tip + '</div>';
+}
+
+function money(n){ return '£' + n.toFixed(2); }
+
+function renderBookingSystem(s){
+  const sys = s.system;
+  const originalTotal = sys.originalDrivers * sys.pricePerDriver;
+  const amendedTotal = sys.amendedDrivers * sys.pricePerDriver;
+  const refund = originalTotal - amendedTotal;
+  return '' +
+    '<div class="system-head"><span>Booking Management System</span><span class="sys-tag">Record ' + sys.reference + '</span></div>' +
+    '<div class="system-body">' +
+      '<div class="record-grid">' +
+        recordField('Venue', sys.venue) +
+        recordField('Date & time', sys.date + ' · ' + sys.time) +
+        recordField('Session type', sys.sessionType) +
+        recordField('Payment status', sys.paymentStatus) +
+        recordField('Original drivers', sys.originalDrivers) +
+        recordField('Status', '<span class="status-pill pending">' + sys.bookingStatus + '</span>', true) +
+      '</div>' +
+      '<table class="amend-table">' +
+        '<thead><tr><th></th><th class="num">Drivers</th><th class="num">Price / driver</th><th class="num">Total</th></tr></thead>' +
+        '<tbody>' +
+          '<tr><td>Original booking</td><td class="num">' + sys.originalDrivers + '</td><td class="num">' + money(sys.pricePerDriver) + '</td><td class="num">' + money(originalTotal) + '</td></tr>' +
+          '<tr><td>Amended booking</td><td class="num">' + sys.amendedDrivers + '</td><td class="num">' + money(sys.pricePerDriver) + '</td><td class="num">' + money(amendedTotal) + '</td></tr>' +
+          '<tr class="total"><td colspan="3">Refund due to customer</td><td class="num">' + money(refund) + '</td></tr>' +
+        '</tbody>' +
+      '</table>' +
+      '<div class="refund-banner">💳 Refund of ' + money(refund) + ' due back to the original payment card once amendment is confirmed.</div>' +
+      '<div class="action-row">' +
+        '<button class="btn-primary">Confirm amendment &amp; process refund</button>' +
+        '<button class="btn-outline">View full booking history</button>' +
+      '</div>' +
+    '</div>';
+}
+
+function recordField(label, value, raw){
+  return '<div class="record-field"><span class="label">' + label + '</span><span class="value">' + value + '</span></div>';
+}
+
+function renderPartySystem(s){
+  const sys = s.system;
+  return '' +
+    '<div class="system-head"><span>Booking Management System</span><span class="sys-tag">Quote ' + sys.reference + '</span></div>' +
+    '<div class="system-body">' +
+      '<div class="record-grid">' +
+        recordField('Venue', sys.venue) +
+        recordField('Requested date', sys.date) +
+        recordField('Party size', sys.children) +
+        recordField('Status', '<span class="status-pill quote">Quote — awaiting date confirmation</span>') +
+      '</div>' +
+      '<h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--navy-text);margin:18px 0 10px;">Karting packages</h3>' +
+      sys.karting.map(pkgRow).join('') +
+      '<h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--navy-text);margin:18px 0 10px;">Food packages</h3>' +
+      sys.food.map(pkgRow).join('') +
+      '<div class="action-row">' +
+        '<button class="btn-primary">Send quote to customer</button>' +
+        '<button class="btn-outline">Check November availability</button>' +
+      '</div>' +
+    '</div>';
+}
+
+function pkgRow(p){
+  return '<div class="package-card"><div><div class="pname">' + p.name + '</div><div class="pdesc">' + p.desc + '</div></div><div class="pprice">' + p.price + '</div></div>';
+}
+
+function renderVoucherSystem(s){
+  const sys = s.system;
+  return '' +
+    '<div class="system-head"><span>Voucher Catalogue &amp; Terms</span><span class="sys-tag">Customer Service</span></div>' +
+    '<div class="system-body">' +
+      '<h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--navy-text);margin:0 0 12px;">Possible vouchers on this account</h3>' +
+      '<div class="voucher-grid">' +
+        sys.vouchers.map(v =>
+          '<div class="voucher-card"><div class="vname">' + v.name + '</div><div class="vdesc">' + v.desc + '</div><div class="vprice">' + v.price + '</div><div class="vcode">' + v.code + '</div></div>'
+        ).join('') +
+      '</div>' +
+      '<h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--navy-text);margin:0 0 6px;">Standard voucher terms &amp; conditions</h3>' +
+      '<ul class="tc-list">' + sys.terms.map(t => '<li>' + t + '</li>').join('') + '</ul>' +
+      '<div class="tc-note">Example T&amp;Cs for demo purposes — confirm exact wording and the specific voucher code against TeamSport\'s live terms before advising the customer.</div>' +
+    '</div>';
+}
+
+function renderSystemPanel(){
+  const panel = document.getElementById('systemPanel');
+  if (current.type === 'booking') panel.innerHTML = renderBookingSystem(current);
+  else if (current.type === 'party') panel.innerHTML = renderPartySystem(current);
+  else if (current.type === 'voucher') panel.innerHTML = renderVoucherSystem(current);
+}
+
+function renderAll(){
+  renderTabs();
+  renderContext();
+  renderSystemPanel();
+}
+
+renderAll();
 </script>
 
 </body>
