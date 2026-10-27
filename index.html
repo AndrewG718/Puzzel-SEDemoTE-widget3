@@ -503,6 +503,15 @@
     margin-top:10px;
     line-height:1.5;
   }
+  .wab-no-match{
+    border:1px dashed var(--border);
+    border-radius:10px;
+    padding:24px;
+    text-align:center;
+    color:#888;
+    font-size:13.5px;
+    line-height:1.6;
+  }
 </style>
 </head>
 <body>
@@ -540,6 +549,7 @@
       <span class="conn-pill standalone" id="widgetConnStatus">Standalone demo mode — open inside the Agent Application to receive live call events</span>
       <div class="wab-actions">
         <button id="simulateCallBtn">Simulate incoming call (queue: Jeremy_Q)</button>
+        <button id="simulateOtherQueueBtn">Simulate call on another queue</button>
         <button id="togglePayloadBtn">View incoming payload</button>
       </div>
     </div>
@@ -548,11 +558,17 @@
     <div class="wab-note">Wired to the Puzzel Widget API: subscribes to <code>SYSTEM_INCOMING_CALL</code> and reads <code>vars.system_queue_key</code> from the payload. When it matches queue <strong>Jeremy_Q</strong>, this widget automatically loads the mapped scenario below — the same mechanism extends to any other queue by adding it to the queue→scenario map in code.</div>
   </div>
 
-  <div class="scenario-tabs" id="scenarioTabs"></div>
+  <div id="noMatchMessage" class="wab-no-match">
+    This widget only shows content for calls on queue <strong>Jeremy_Q</strong>. It stays hidden for any other queue, and for the ones above it hasn't been wired to.
+  </div>
 
-  <div class="sim-layout">
-    <div class="context-panel" id="contextPanel"></div>
-    <div class="system-panel" id="systemPanel"></div>
+  <div id="scenarioContent" style="display:none;">
+    <div class="scenario-tabs" id="scenarioTabs"></div>
+
+    <div class="sim-layout">
+      <div class="context-panel" id="contextPanel"></div>
+      <div class="system-panel" id="systemPanel"></div>
+    </div>
   </div>
 </section>
 
@@ -867,10 +883,23 @@ function handleIncomingCall(payload){
   renderPayload(vars);
 
   const scenarioId = QUEUE_SCENARIO_MAP[queueKey];
-  if (scenarioId){
+  const scenarioContent = document.getElementById('scenarioContent');
+  const noMatchMessage = document.getElementById('noMatchMessage');
+
+  if (queueKey === TARGET_QUEUE_KEY && scenarioId){
     const match = scenarios.find(s => s.id === scenarioId);
-    if (match){ current = match; renderAll(); }
+    if (match){
+      current = match;
+      renderAll();
+      scenarioContent.style.display = '';
+      noMatchMessage.style.display = 'none';
+      return;
+    }
   }
+
+  // Any other queue (or no queue at all): keep the widget hidden.
+  scenarioContent.style.display = 'none';
+  noMatchMessage.style.display = '';
 }
 
 function renderQueueStatus(queueKey, call){
@@ -908,6 +937,28 @@ document.getElementById('simulateCallBtn').addEventListener('click', () => {
         system_queue_id: 'queue1',
         system_queue_agents: '2',
         system_queue_available_agents: '1',
+        system_country: 'GB',
+        timestamp: new Date().toISOString()
+      }
+    },
+    tab: { focus: false }
+  };
+  handleIncomingCall(mockPayload);
+  document.getElementById('payloadBox').classList.add('open');
+  document.getElementById('togglePayloadBtn').textContent = 'Hide incoming payload';
+});
+
+document.getElementById('simulateOtherQueueBtn').addEventListener('click', () => {
+  const mockPayload = {
+    call: {
+      sessionId: 'demo-session-' + Date.now(),
+      queueKey: 'q_other_queue',
+      outboundCaller: 'Jane Doe',
+      caller: '07700900123',
+      isIncoming: true,
+      vars: {
+        system_queue_key: 'q_other_queue',
+        system_queue_id: 'queue2',
         system_country: 'GB',
         timestamp: new Date().toISOString()
       }
