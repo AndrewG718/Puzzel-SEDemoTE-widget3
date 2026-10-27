@@ -425,6 +425,84 @@
     .record-grid{ grid-template-columns:1fr; }
     .voucher-grid{ grid-template-columns:1fr; }
   }
+
+  /* ---- Puzzel Widget API integration bar ---- */
+  .widget-api-bar{
+    background:var(--grey-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:22px;
+  }
+  .widget-api-bar .wab-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .conn-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:11.5px;
+    font-weight:700;
+    padding:5px 12px;
+    border-radius:14px;
+  }
+  .conn-pill.standalone{ background:#fff3cd; color:#8a6400; }
+  .conn-pill.connected{ background:#e3f6ea; color:var(--green); }
+  .conn-pill::before{ content:"●"; font-size:9px; }
+  .wab-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .wab-actions button{
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--navy-text);
+    font-size:11.5px;
+    font-weight:700;
+    padding:7px 14px;
+    border-radius:16px;
+    cursor:pointer;
+  }
+  .wab-actions button.primary{
+    background:var(--navy-text);
+    color:#fff;
+    border-color:var(--navy-text);
+  }
+  #queueStatus{ margin-top:12px; }
+  #queueStatus .context-row{ margin-bottom:6px; }
+  #queueStatus code{
+    background:#e9edf1;
+    padding:2px 6px;
+    border-radius:4px;
+    font-size:12px;
+  }
+  .payload-box{
+    margin-top:12px;
+    background:#0f1b3f;
+    border-radius:8px;
+    padding:14px;
+    max-height:260px;
+    overflow:auto;
+    display:none;
+  }
+  .payload-box.open{ display:block; }
+  .payload-box pre{
+    margin:0;
+    color:#d7e2f7;
+    font-size:11px;
+    line-height:1.6;
+    white-space:pre-wrap;
+    word-break:break-word;
+    font-family:'SFMono-Regular', Consolas, monospace;
+  }
+  .payload-box .vars-key{ color:#7fd0ff; }
+  .wab-note{
+    font-size:11.5px;
+    color:#777;
+    margin-top:10px;
+    line-height:1.5;
+  }
 </style>
 </head>
 <body>
@@ -455,6 +533,19 @@
   <div class="sim-header">
     <h2>CRM Integration</h2>
     <p>Pick a scenario to see the customer's enquiry alongside what the booking system shows the agent.</p>
+  </div>
+
+  <div class="widget-api-bar">
+    <div class="wab-row">
+      <span class="conn-pill standalone" id="widgetConnStatus">Standalone demo mode — open inside the Agent Application to receive live call events</span>
+      <div class="wab-actions">
+        <button id="simulateCallBtn">Simulate incoming call (queue: Jeremy_Q)</button>
+        <button id="togglePayloadBtn">View incoming payload</button>
+      </div>
+    </div>
+    <div id="queueStatus"><span class="label" style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.3px;">No call in progress</span></div>
+    <div class="payload-box" id="payloadBox"><pre id="payloadPre">Waiting for a SYSTEM_INCOMING_CALL event…</pre></div>
+    <div class="wab-note">Wired to the Puzzel Widget API: subscribes to <code>SYSTEM_INCOMING_CALL</code> and reads <code>vars.system_queue_key</code> from the payload. When it matches queue <strong>Jeremy_Q</strong>, this widget automatically loads the mapped scenario below — the same mechanism extends to any other queue by adding it to the queue→scenario map in code.</div>
   </div>
 
   <div class="scenario-tabs" id="scenarioTabs"></div>
@@ -703,6 +794,139 @@ function renderAll(){
 }
 
 renderAll();
+
+/* =========================================================================
+   Puzzel Widget API integration
+   -------------------------------------------------------------------------
+   This widget runs inside an iframe hosted by the Agent Application. The
+   core opens a MessageChannel with window.postMessage; we listen for that
+   handshake, grab the port, and use it to subscribe to SYSTEM_INCOMING_CALL.
+
+   On each incoming call we read vars.system_queue_key from the payload
+   (the same value is also available at call.queueKey) and, if it matches
+   a queue we care about, automatically load the mapped scenario so the
+   agent sees the right system context the instant the call lands.
+   ========================================================================= */
+
+// Replace '*' with the real Agent Application origin before going live.
+const AGENT_APP_ORIGIN = '*';
+
+// This is the queue this demo is wired to.
+const TARGET_QUEUE_KEY = 'Jeremy_Q';
+
+// queue_key -> scenario id. Add more queues here as needed.
+const QUEUE_SCENARIO_MAP = {
+  'Jeremy_Q': 1 // Existing booking amendment — Farnborough
+};
+
+let widgetPort = null;
+
+function initWidgetApi(){
+  window.addEventListener('message', (message) => {
+    if (AGENT_APP_ORIGIN !== '*' && message.origin !== AGENT_APP_ORIGIN) return;
+    if (!widgetPort && message.ports && message.ports[0]) {
+      widgetPort = message.ports[0];
+      widgetPort.onmessage = handleWidgetMessage;
+      subscribeToIncomingCall();
+      setConnectionStatus(true);
+    }
+  });
+}
+
+function subscribeToIncomingCall(){
+  if (!widgetPort) return;
+  widgetPort.postMessage({ subscribe: 'SYSTEM_INCOMING_CALL' });
+}
+
+function handleWidgetMessage(message){
+  const data = message.data;
+  if (!data) return;
+  if (data.type === 'event' && data.name === 'SYSTEM_INCOMING_CALL') {
+    handleIncomingCall(data.value);
+  }
+}
+
+function setConnectionStatus(connected){
+  const el = document.getElementById('widgetConnStatus');
+  if (!el) return;
+  if (connected){
+    el.textContent = 'Connected to Agent Application';
+    el.className = 'conn-pill connected';
+  } else {
+    el.textContent = 'Standalone demo mode — open inside the Agent Application to receive live call events';
+    el.className = 'conn-pill standalone';
+  }
+}
+
+function handleIncomingCall(payload){
+  const call = (payload && payload.call) || {};
+  const vars = call.vars || {};
+  const queueKey = vars.system_queue_key || call.queueKey || null;
+
+  renderQueueStatus(queueKey, call);
+  renderPayload(vars);
+
+  const scenarioId = QUEUE_SCENARIO_MAP[queueKey];
+  if (scenarioId){
+    const match = scenarios.find(s => s.id === scenarioId);
+    if (match){ current = match; renderAll(); }
+  }
+}
+
+function renderQueueStatus(queueKey, call){
+  const el = document.getElementById('queueStatus');
+  if (!el) return;
+  if (!queueKey){
+    el.innerHTML = '<span class="label" style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.3px;">No call in progress</span>';
+    return;
+  }
+  const matched = queueKey === TARGET_QUEUE_KEY;
+  el.innerHTML =
+    '<div class="context-row"><span class="label">Incoming call · vars.system_queue_key</span><code>' + queueKey + '</code></div>' +
+    '<div class="context-row"><span class="label">Caller</span>' + (call.outboundCaller || call.caller || 'Unknown') + '</div>' +
+    (matched
+      ? '<span class="status-pill paid">Matched ' + TARGET_QUEUE_KEY + ' — scenario loaded below</span>'
+      : '<span class="status-pill pending">No scenario mapped for this queue</span>');
+}
+
+function renderPayload(vars){
+  const pre = document.getElementById('payloadPre');
+  if (!pre) return;
+  pre.textContent = JSON.stringify({ vars }, null, 2);
+}
+
+document.getElementById('simulateCallBtn').addEventListener('click', () => {
+  const mockPayload = {
+    call: {
+      sessionId: 'demo-session-' + Date.now(),
+      queueKey: TARGET_QUEUE_KEY,
+      outboundCaller: 'Andrew Smith',
+      caller: '07873616744',
+      isIncoming: true,
+      vars: {
+        system_queue_key: TARGET_QUEUE_KEY,
+        system_queue_id: 'queue1',
+        system_queue_agents: '2',
+        system_queue_available_agents: '1',
+        system_country: 'GB',
+        timestamp: new Date().toISOString()
+      }
+    },
+    tab: { focus: false }
+  };
+  handleIncomingCall(mockPayload);
+  document.getElementById('payloadBox').classList.add('open');
+  document.getElementById('togglePayloadBtn').textContent = 'Hide incoming payload';
+});
+
+document.getElementById('togglePayloadBtn').addEventListener('click', () => {
+  const box = document.getElementById('payloadBox');
+  const btn = document.getElementById('togglePayloadBtn');
+  box.classList.toggle('open');
+  btn.textContent = box.classList.contains('open') ? 'Hide incoming payload' : 'View incoming payload';
+});
+
+initWidgetApi();
 </script>
 
 </body>
