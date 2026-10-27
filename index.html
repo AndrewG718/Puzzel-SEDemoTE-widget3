@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Go Karting at TeamSport | #1 For Indoor Karting Nationwide</title>
+<title>TeamSport | Customer Enquiry Simulator (Agent Demo)</title>
 <style>
   :root{
     --black:#111111;
@@ -14,6 +14,8 @@
     --pink:#e6186b;
     --blue:#2d8eff;
     --teal:#19b3a6;
+    --green:#1a9c5a;
+    --red:#d1392b;
     --border:#e2e5ea;
     --grey-bg:#f4f6f9;
   }
@@ -24,15 +26,6 @@
     color:#1a1a1a;
     background:#fff;
   }
-  a{ text-decoration:none; }
-  .demo-flag{
-    background:#fff3cd;
-    border-bottom:1px solid #e6c860;
-    color:#5c4a00;
-    font-size:12.5px;
-    text-align:center;
-    padding:8px;
-  }
   .utility-bar{
     background:var(--black);
     color:#fff;
@@ -42,8 +35,6 @@
     gap:28px;
     padding:9px 24px;
     letter-spacing:.3px;
-    overflow-x:auto;
-    white-space:nowrap;
   }
   .utility-bar span{ opacity:.9; }
   nav.main-nav{
@@ -52,8 +43,6 @@
     justify-content:space-between;
     padding:14px 24px;
     border-bottom:1px solid var(--border);
-    flex-wrap:wrap;
-    gap:12px;
   }
   .wordmark{
     font-style:italic;
@@ -69,23 +58,13 @@
     font-weight:700;
     letter-spacing:.3px;
   }
-  .nav-links a{ color:#0a0a0a; }
-  .nav-right{ font-size:13px; font-weight:700; display:flex; align-items:center; gap:16px; }
-  .nav-right a{ color:var(--blue); }
-  .btn-edit-booking{
-    background:var(--navy-text);
-    color:#fff;
+  .nav-links a{ color:#0a0a0a; text-decoration:none; }
+  .nav-right{
+    font-size:13px;
     font-weight:700;
-    font-size:12.5px;
-    padding:9px 16px;
-    border-radius:6px;
-    border:none;
-    cursor:pointer;
-    white-space:nowrap;
   }
-  .btn-edit-booking:hover{ background:var(--navy-deep); }
+  .nav-right a{ color:var(--blue); text-decoration:none; }
 
-  /* ---- Hero ---- */
   .hero{
     background:linear-gradient(120deg, var(--navy) 0%, var(--navy-deep) 100%);
     color:#fff;
@@ -93,14 +72,12 @@
     position:relative;
     overflow:hidden;
   }
-  .hero-inner{ max-width:1150px; margin:0 auto; }
   .hero h1{
-    font-size:42px;
+    font-size:40px;
     font-weight:800;
     line-height:1.15;
     margin:0 0 6px;
     text-transform:uppercase;
-    max-width:620px;
   }
   .hero h1 .accent{ color:var(--orange); }
   .hero .underline{
@@ -108,65 +85,25 @@
     background:linear-gradient(90deg, var(--pink), var(--orange));
     margin:18px 0;
   }
-  .hero .sub{ font-size:16px; font-weight:700; margin-bottom:8px; }
   .hero p{ max-width:520px; font-size:15px; color:#cfd6e8; line-height:1.6; }
-
-  .hero-cards-row{
-    display:flex;
-    gap:16px;
-    margin-top:28px;
-    flex-wrap:wrap;
-    align-items:stretch;
-  }
-  .location-card{
-    background:#fff;
-    color:#1a1a1a;
-    border-radius:10px;
-    padding:20px;
-    max-width:420px;
-    flex:1 1 320px;
-  }
-  .edit-booking-card{
-    background:#fff;
-    color:#1a1a1a;
-    border-radius:10px;
-    padding:20px;
-    max-width:280px;
-    flex:1 1 220px;
-    display:flex;
-    flex-direction:column;
-  }
-  .edit-booking-card label{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:#666; }
-  .edit-booking-card p{ font-size:12.5px; color:#555; line-height:1.5; margin:8px 0 14px; flex:1; }
-  .edit-booking-card .btn-edit-booking{ width:100%; padding:11px; }
-  .location-card label{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:#666; }
-  .location-card select{
-    width:100%; padding:10px; margin:8px 0 14px;
-    border:1px solid var(--border); border-radius:6px; font-size:14px;
-  }
-  .btn-book{
-    display:inline-block;
-    background:var(--pink);
-    color:#fff;
-    font-weight:700;
-    font-size:13px;
-    padding:12px 22px;
-    border-radius:6px;
-    border:none;
-    cursor:pointer;
-  }
 
   .feature-strip{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:1fr 1fr;
     gap:0;
     background:var(--navy-deep);
     border-radius:10px;
     padding:20px;
-    margin-top:32px;
-    max-width:1100px;
+    margin-top:28px;
+    max-width:620px;
   }
-  .feature{ display:flex; align-items:center; gap:12px; padding:14px; color:#fff; }
+  .feature{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+    color:#fff;
+  }
   .feature .dot{
     width:40px;height:40px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
@@ -179,98 +116,320 @@
   .feature .ftitle{ font-weight:700; font-size:13px; }
   .feature .fsub{ font-size:11px; color:#aeb8d0; }
 
-  /* ---- generic section ---- */
-  section.block{ max-width:1150px; margin:0 auto; padding:56px 24px; }
-  .eyebrow{ color:var(--pink); font-weight:800; font-size:12px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
-  h2.section-title{ color:var(--navy-text); font-size:30px; margin:0 0 14px; }
-  p.section-copy{ color:#444; font-size:15px; line-height:1.7; max-width:640px; }
-  .link-arrow{ color:var(--blue); font-weight:700; font-size:14px; }
-
-  .split{ display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; }
-  .img-block{
-    border-radius:12px;
-    min-height:260px;
-    background:repeating-linear-gradient(135deg, var(--navy) 0 18px, var(--navy-deep) 18px 36px);
-    display:flex; align-items:flex-end; padding:18px; color:#fff; font-weight:700; font-size:13px;
+  /* ---- Agent simulator section ---- */
+  .sim-section{
+    max-width:1150px;
+    margin:56px auto;
+    padding:0 24px;
   }
-  .img-block.alt{ background:repeating-linear-gradient(135deg, #1b1b1b 0 18px, #2b2b2b 18px 36px); }
-
-  .half-term{
-    background:linear-gradient(120deg, var(--orange), #e07a00);
-    border-radius:12px;
-    padding:28px 32px;
+  .sim-header h2{
+    color:var(--navy-text);
+    font-size:26px;
+    margin-bottom:4px;
+  }
+  .sim-header p{
+    color:#555;
+    font-size:14px;
+    margin-bottom:24px;
+  }
+  .scenario-tabs{
+    display:flex;
+    gap:10px;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+  }
+  .scenario-tab{
+    border:1px solid var(--border);
+    background:#fff;
+    padding:10px 16px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    color:var(--navy-text);
+  }
+  .scenario-tab.active{
+    background:var(--navy-text);
     color:#fff;
+    border-color:var(--navy-text);
+  }
+
+  .sim-layout{
+    display:grid;
+    grid-template-columns:300px 1fr;
+    gap:20px;
+    align-items:start;
+  }
+  .context-panel{
+    background:var(--grey-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:20px;
+  }
+  .context-panel h3{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:var(--navy-text);
+    margin:0 0 14px;
+  }
+  .context-row{
+    font-size:13px;
+    margin-bottom:12px;
+    line-height:1.4;
+  }
+  .context-row .label{
+    display:block;
+    font-weight:700;
+    color:#555;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    margin-bottom:2px;
+  }
+  .badge{
+    display:inline-block;
+    background:var(--blue);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:12px;
+    margin-bottom:10px;
+  }
+  .customer-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-bottom:16px;
+  }
+  .customer-card .label{
+    display:block;
+    font-weight:700;
+    color:#555;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    margin-bottom:4px;
+  }
+  .customer-name{
+    font-weight:700;
+    font-size:14px;
+    color:var(--navy-text);
+    margin-bottom:4px;
+  }
+  .customer-line{
+    font-size:12.5px;
+    color:#333;
+    margin-bottom:2px;
+  }
+
+  /* ---- System / booking mock-up panel ---- */
+  .system-panel{
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    background:#fff;
+  }
+  .system-head{
+    background:var(--black);
+    color:#fff;
+    padding:14px 18px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    flex-wrap:wrap;
-    gap:16px;
-    margin:0 24px;
-    max-width:1100px;
-    margin:0 auto;
+    font-size:13px;
+    font-weight:700;
   }
-  .half-term h3{ margin:0 0 4px; font-size:22px; }
-  .half-term .btn-dark{ background:#111; color:#fff; padding:10px 20px; border-radius:6px; font-weight:700; font-size:13px; }
-
-  .exp-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:28px; }
-  .exp-card{ border-radius:12px; overflow:hidden; border:1px solid var(--border); }
-  .exp-card .thumb{ height:150px; display:flex; align-items:flex-end; padding:14px; color:#fff; font-weight:800; font-size:13px; text-transform:uppercase; letter-spacing:.5px; }
-  .exp-card:nth-child(1) .thumb{ background:linear-gradient(120deg,var(--navy),var(--navy-deep)); }
-  .exp-card:nth-child(2) .thumb{ background:linear-gradient(120deg,var(--teal),#0f7d73); }
-  .exp-card:nth-child(3) .thumb{ background:linear-gradient(120deg,var(--pink),#ad0f4e); }
-  .exp-card .body{ padding:18px; }
-  .exp-card h4{ margin:0 0 8px; font-size:17px; color:var(--navy-text); }
-  .exp-card p{ font-size:13.5px; color:#555; line-height:1.55; margin:0 0 12px; }
-
-  .offer-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:28px; }
-  .offer-card{ border:1px solid var(--border); border-radius:12px; padding:20px; }
-  .offer-card h4{ margin:0 0 10px; font-size:16px; color:var(--navy-text); }
-  .offer-card ul{ padding-left:18px; margin:0 0 16px; font-size:13.5px; color:#444; line-height:1.7; }
-  .offer-card .btn-small{ display:inline-block; background:var(--navy-text); color:#fff; font-size:12.5px; font-weight:700; padding:8px 16px; border-radius:6px; }
-
-  .member-strip{
-    background:var(--grey-bg);
+  .system-head .sys-tag{
+    background:#333;
+    color:#cfd6e8;
+    font-size:10.5px;
+    font-weight:700;
+    padding:4px 10px;
     border-radius:12px;
-    padding:36px;
-    margin-top:28px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
   }
-  .member-cols{ display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-top:20px; }
-  .member-cols h4{ color:var(--navy-text); font-size:15px; margin:0 0 8px; }
-  .member-cols p{ font-size:13.5px; color:#555; line-height:1.6; margin:0 0 10px; }
-
-  .discover-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:24px; }
-  .discover-card{ border:1px solid var(--border); border-radius:10px; padding:16px; }
-  .discover-card .dname{ font-weight:700; font-size:14px; color:var(--navy-text); margin-bottom:4px; }
-  .discover-card .dlink{ font-size:12.5px; color:var(--blue); font-weight:700; }
-
-  footer{ background:var(--black); color:#cfd6e8; margin-top:40px; }
-  .footer-grid{
-    max-width:1150px; margin:0 auto; padding:48px 24px 24px;
-    display:grid; grid-template-columns:repeat(4,1fr); gap:28px;
+  .system-body{
+    padding:22px;
   }
-  .footer-grid h5{ color:#fff; font-size:13px; text-transform:uppercase; letter-spacing:.4px; margin:0 0 14px; }
-  .footer-grid ul{ list-style:none; padding:0; margin:0; }
-  .footer-grid li{ margin-bottom:9px; }
-  .footer-grid a{ color:#aeb8d0; font-size:13px; }
-  .footer-bottom{
-    border-top:1px solid #2a2a2a;
-    padding:18px 24px;
-    text-align:center;
+  .record-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 24px;
+    margin-bottom:18px;
+  }
+  .record-field{
+    padding:10px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .record-field .label{
+    display:block;
+    font-size:10.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    color:#888;
+    margin-bottom:3px;
+  }
+  .record-field .value{
+    font-size:14px;
+    font-weight:600;
+    color:#1a1a1a;
+  }
+  .status-pill{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:12px;
+  }
+  .status-pill.pending{ background:#fff3cd; color:#8a6400; }
+  .status-pill.paid{ background:#e3f6ea; color:var(--green); }
+  .status-pill.quote{ background:#e8f0ff; color:var(--blue); }
+
+  table.amend-table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0 20px;
+    font-size:13px;
+  }
+  table.amend-table th, table.amend-table td{
+    text-align:left;
+    padding:10px 12px;
+    border-bottom:1px solid var(--border);
+  }
+  table.amend-table th{
+    background:var(--grey-bg);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    color:#666;
+  }
+  table.amend-table td.num{ text-align:right; }
+  table.amend-table tr.total td{ font-weight:700; }
+  .refund-banner{
+    background:#e3f6ea;
+    border:1px solid #bfe8cf;
+    color:var(--green);
+    border-radius:8px;
+    padding:12px 16px;
+    font-size:14px;
+    font-weight:700;
+    margin-top:4px;
+  }
+  .action-row{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .action-row button{
+    border:none;
+    border-radius:8px;
+    padding:10px 18px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .btn-primary{ background:var(--blue); color:#fff; }
+  .btn-outline{ background:#fff; border:1px solid var(--border) !important; color:var(--navy-text); }
+
+  /* party quote */
+  .package-card{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:14px 16px;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:var(--grey-bg);
+  }
+  .package-card .pname{ font-weight:700; font-size:13.5px; color:var(--navy-text); }
+  .package-card .pdesc{ font-size:12px; color:#666; margin-top:2px; }
+  .package-card .pprice{ font-weight:700; font-size:14px; color:var(--navy-text); white-space:nowrap; margin-left:16px; }
+
+  /* vouchers */
+  .voucher-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:22px;
+  }
+  .voucher-card{
+    border-radius:10px;
+    padding:16px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+  }
+  .voucher-card:nth-child(1){ background:linear-gradient(120deg, var(--navy), var(--navy-deep)); }
+  .voucher-card:nth-child(2){ background:linear-gradient(120deg, var(--pink), #ad0f4e); }
+  .voucher-card:nth-child(3){ background:linear-gradient(120deg, var(--orange), #c97d00); }
+  .voucher-card:nth-child(4){ background:linear-gradient(120deg, var(--teal), #0f7d73); }
+  .voucher-card .vname{ font-weight:800; font-size:14px; margin-bottom:4px; }
+  .voucher-card .vdesc{ font-size:12px; opacity:.9; margin-bottom:10px; }
+  .voucher-card .vprice{ font-size:18px; font-weight:800; }
+  .voucher-card .vcode{ font-size:10.5px; opacity:.75; margin-top:8px; letter-spacing:.5px; }
+
+  .tc-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .tc-list li{
+    font-size:13px;
+    line-height:1.5;
+    padding:9px 0 9px 22px;
+    border-bottom:1px solid var(--border);
+    position:relative;
+    color:#333;
+  }
+  .tc-list li::before{
+    content:"✓";
+    position:absolute;
+    left:0;
+    color:var(--teal);
+    font-weight:800;
+  }
+  .tc-note{
+    margin-top:12px;
     font-size:11.5px;
-    color:#777;
-    line-height:1.7;
+    color:#888;
+    font-style:italic;
   }
 
-  @media (max-width:900px){
-    .feature-strip, .exp-grid, .offer-grid, .member-cols, .discover-grid, .footer-grid{ grid-template-columns:1fr; }
-    .split{ grid-template-columns:1fr; }
-    .hero h1{ font-size:32px; }
+  footer{
+    background:var(--black);
+    color:#aaa;
+    font-size:12px;
+    text-align:center;
+    padding:24px;
+    margin-top:40px;
+  }
+  .demo-flag{
+    background:#fff3cd;
+    border-top:1px solid #e6c860;
+    border-bottom:1px solid #e6c860;
+    color:#5c4a00;
+    font-size:12.5px;
+    text-align:center;
+    padding:8px;
+  }
+
+  @media (max-width:800px){
+    .sim-layout{ grid-template-columns:1fr; }
+    .feature-strip{ grid-template-columns:1fr; }
+    .record-grid{ grid-template-columns:1fr; }
+    .voucher-grid{ grid-template-columns:1fr; }
   }
 </style>
 </head>
 <body>
 
-<div class="demo-flag">Internal Puzzel demo — content adapted from team-sport.co.uk to illustrate page structure/branding only. Not the live TeamSport website.</div>
+<div class="demo-flag">Internal Puzzel demo — simulated TeamSport page for agent-response training. Not the live TeamSport website. Booking records, pricing and voucher T&amp;Cs shown are illustrative example data only.</div>
 
 <div class="utility-bar">
   <span>🎄 CHRISTMAS PARTIES</span>
@@ -280,7 +439,6 @@
   <span>CORPORATE</span>
   <span>FAQS</span>
   <span>GIFT VOUCHERS</span>
-  <span>NEWSLETTER</span>
 </div>
 
 <nav class="main-nav">
@@ -290,273 +448,261 @@
     <a href="#">EXPERIENCES</a>
     <a href="#">MEMBERSHIP</a>
   </div>
-  <div class="nav-right">
-    <span>CALL US <a href="tel:01252732300">01252 732300</a> OR <a href="#">CONTACT US</a></span>
-  </div>
+  <div class="nav-right">CALL US <a href="tel:01252732300">01252 732300</a> OR <a href="#">CONTACT US</a></div>
 </nav>
 
-<div id="editBookingModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:50; align-items:center; justify-content:center;">
-  <div style="background:#fff; border-radius:12px; max-width:420px; width:90%; padding:28px; position:relative;">
-    <button id="closeEditBookingBtn" style="position:absolute; top:14px; right:14px; background:none; border:none; font-size:18px; cursor:pointer; color:#888;">✕</button>
-    <h3 style="margin:0 0 6px; color:#13224b; font-size:19px;">Edit Your Booking</h3>
-    <p style="margin:0 0 18px; font-size:13.5px; color:#555;">Enter your booking reference and email to find and amend your booking.</p>
-    <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:#666; margin-bottom:4px;">Booking reference</label>
-    <input type="text" placeholder="e.g. TS-FNB-48213" style="width:100%; padding:10px; margin-bottom:14px; border:1px solid #e2e5ea; border-radius:6px; font-size:14px;">
-    <label style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:#666; margin-bottom:4px;">Email address</label>
-    <input type="email" placeholder="you@example.com" style="width:100%; padding:10px; margin-bottom:20px; border:1px solid #e2e5ea; border-radius:6px; font-size:14px;">
-    <button style="width:100%; background:#e6186b; color:#fff; border:none; padding:12px; border-radius:6px; font-weight:700; font-size:14px; cursor:pointer;">Find My Booking</button>
+<section class="sim-section">
+  <div class="sim-header">
+    <h2>CRM Integration</h2>
+    <p>Pick a scenario to see the customer's enquiry alongside what the booking system shows the agent.</p>
   </div>
-</div>
+
+  <div class="scenario-tabs" id="scenarioTabs"></div>
+
+  <div class="sim-layout">
+    <div class="context-panel" id="contextPanel"></div>
+    <div class="system-panel" id="systemPanel"></div>
+  </div>
+</section>
 
 <section class="hero">
-  <div class="hero-inner">
-    <h1>THE <span class="accent">ULTIMATE</span><br>INDOOR KARTING<br>EXPERIENCE</h1>
-    <div class="underline"></div>
-    <div class="sub">UK'S #1 FOR INDOOR GO KARTING</div>
-    <p>High-speed action, state-of-the-art tracks and unforgettable experiences for everyone. Race, compete and create lasting memories.</p>
+  <h1>THE <span class="accent">ULTIMATE</span><br>INDOOR KARTING<br>EXPERIENCE</h1>
+  <div class="underline"></div>
+  <p>Agent enquiry simulator — see what the booking system shows the agent for each customer scenario.</p>
 
-    <div class="hero-cards-row">
-    <div class="location-card">
-      <label>Choose your location</label>
-      <select>
-        <option>Select a location</option>
-        <optgroup label="North">
-          <option>Bradford</option><option>Hull</option><option>Leeds</option><option>Liverpool</option>
-          <option>Manchester Trafford</option><option>Manchester Victoria</option><option>Newcastle</option>
-          <option>Preston</option><option>Sheffield</option><option>Stockton</option><option>Stoke</option><option>Warrington</option>
-        </optgroup>
-        <optgroup label="Midlands">
-          <option>Birmingham</option><option>Coventry</option><option>Leicester</option><option>Nottingham</option>
-        </optgroup>
-        <optgroup label="London">
-          <option>Acton</option><option>Brent Cross</option><option>Docklands</option><option>Edmonton</option><option>Mitcham</option><option>Watford</option>
-        </optgroup>
-        <optgroup label="South">
-          <option>Basildon</option><option>Bournemouth</option><option>Brighton</option><option>Bristol</option>
-          <option>Crawley</option><option>Dunstable</option><option>Farnborough</option><option>Gosport</option>
-          <option>Harlow</option><option>High Wycombe</option><option>Reading</option><option>Southampton</option>
-        </optgroup>
-        <optgroup label="Scotland">
-          <option>Dundee</option><option>Glasgow Cambuslang</option><option>Glasgow Clydebank</option>
-        </optgroup>
-        <optgroup label="Wales"><option>Cardiff</option></optgroup>
-      </select>
-      <button class="btn-book">Book Now ›</button>
-    </div>
-
-    <div class="edit-booking-card">
-      <label>Already booked?</label>
-      <p>Look up an existing booking to amend the drivers, date or details.</p>
-      <button class="btn-edit-booking" id="editBookingBtn">EDIT BOOKING</button>
-    </div>
-    </div>
-
-    <div class="feature-strip">
-      <div class="feature"><div class="dot">📍</div><div><div class="ftitle">38 Tracks Nationwide</div><div class="fsub">UK's largest indoor karting company</div></div></div>
-      <div class="feature"><div class="dot">⭐</div><div><div class="ftitle">4.5/5 Average Review</div><div class="fsub">50,000+ reviews every year</div></div></div>
-      <div class="feature"><div class="dot">🎉</div><div><div class="ftitle">Perfect For Parties</div><div class="fsub">Birthdays | Corporate | Stag &amp; Hen</div></div></div>
-      <div class="feature"><div class="dot">🏁</div><div><div class="ftitle">Race Like A Pro</div><div class="fsub">State-of-the-art tracks</div></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="block">
-  <div class="split">
-    <div class="img-block">Nationwide Go-Karting</div>
-    <div>
-      <h2 class="section-title">38 tracks across the UK</h2>
-      <p class="section-copy">TeamSport is the UK's largest indoor karting company. Our venues are built for fast, high-energy karting and are a popular choice for family days out, kids' birthday parties, adult groups, corporate events, stag and hen dos, and larger celebrations.</p>
-      <p class="section-copy">With six tracks in London alone and venues from Cardiff to Dundee, there's a TeamSport track close to wherever you are in the UK.</p>
-      <a class="link-arrow" href="#">FIND A TRACK NEAR YOU ›</a>
-    </div>
-  </div>
-</section>
-
-<section class="block" style="padding-top:0;">
-  <div class="img-block alt" style="min-height:220px; align-items:center; justify-content:center; font-size:16px;">▶ TeamSport Experiences — watch the video</div>
-  <p class="section-copy" style="margin:18px auto 0; text-align:center; max-width:700px;">Whether you're chasing your fastest lap, celebrating with friends, or planning a day out, TeamSport delivers thrilling indoor karting for drivers aged 8 and over — plus off-track activities including laser tag, bowling and mini golf.</p>
-</section>
-
-<div class="half-term">
-  <div>
-    <div style="font-size:12px;font-weight:800;letter-spacing:.5px;">HALF-TERM THRILLS</div>
-    <h3>October Half-Term — Book Now</h3>
-  </div>
-  <a class="btn-dark" href="#">Book Now →</a>
-</div>
-
-<section class="block">
-  <div class="eyebrow">TeamSport Experiences</div>
-  <h2 class="section-title">Race, play and celebrate</h2>
-  <div class="exp-grid">
-    <div class="exp-card">
-      <div class="thumb">Race</div>
-      <div class="body">
-        <h4>Go-Karting</h4>
-        <p>Race wheel-to-wheel with friends, family or colleagues on multi-level tracks built for speed and competition.</p>
-        <a class="link-arrow" href="#">Explore Go-Karting ›</a>
-      </div>
-    </div>
-    <div class="exp-card">
-      <div class="thumb">Play</div>
-      <div class="body">
-        <h4>Off-Track Experiences</h4>
-        <p>At selected venues, extend the day with laser combat, bowling and mini golf — great for groups and parties.</p>
-        <a class="link-arrow" href="#">Explore Off-Track Experiences ›</a>
-      </div>
-    </div>
-    <div class="exp-card">
-      <div class="thumb">Celebrate</div>
-      <div class="body">
-        <h4>Parties &amp; Events</h4>
-        <p>From corporate events to birthdays, stag and hen dos — karting and off-track activities make any occasion memorable.</p>
-        <a class="link-arrow" href="#">Explore Parties &amp; Events ›</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="offer-grid">
-    <div class="offer-card">
-      <h4>Ultimate Race Experience</h4>
-      <ul>
-        <li>8 years and over</li>
-        <li>2 sessions on the Main track</li>
-        <li>Fastest Lap wins, Pit Lane start</li>
-      </ul>
-      <a class="btn-small" href="#">Book now</a>
-    </div>
-    <div class="offer-card">
-      <h4>Grand Prix</h4>
-      <ul>
-        <li>A true motorsport format</li>
-        <li>Qualifying session + Grid Start race</li>
-        <li>Podium presentation</li>
-      </ul>
-      <a class="btn-small" href="#">Book now</a>
-    </div>
-    <div class="offer-card">
-      <h4>Special Occasions</h4>
-      <ul>
-        <li>Corporate parties</li>
-        <li>Stag &amp; hen dos</li>
-        <li>Birthday &amp; large group bookings</li>
-      </ul>
-      <a class="btn-small" href="#">Parties and Events</a>
-    </div>
-  </div>
-</section>
-
-<section class="block">
-  <div class="member-strip">
-    <div class="eyebrow">For Members</div>
-    <h2 class="section-title" style="margin-bottom:6px;">Take your racing further</h2>
-    <p class="section-copy">TeamSport Membership unlocks regular racing, exclusive benefits and competitive championships — including BIKC, the world's largest indoor karting championship.</p>
-    <div class="member-cols">
-      <div>
-        <h4>Membership</h4>
-        <p>Unlock member benefits, exclusive offers and more opportunities to get back on track.</p>
-        <a class="link-arrow" href="#">Discover Membership ›</a>
-      </div>
-      <div>
-        <h4>Championships</h4>
-        <p>From local championships like GRID Series to BIKC, take your racing to the next level.</p>
-        <a class="link-arrow" href="#">Explore Championships ›</a>
-      </div>
-      <div>
-        <h4>Go Karting Lessons</h4>
-        <p>Race Academy coaching for ages 8–15, plus the Girls Karting Academy with exclusive club nights.</p>
-        <a class="link-arrow" href="#">Find Out More ›</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="block">
-  <h2 class="section-title">Discover More</h2>
-  <div class="discover-grid">
-    <div class="discover-card"><div class="dname">Gift Vouchers</div><a class="dlink" href="#">Find Out More →</a></div>
-    <div class="discover-card"><div class="dname">Go Karting</div><a class="dlink" href="#">Find Out More →</a></div>
-    <div class="discover-card"><div class="dname">FAQs</div><a class="dlink" href="#">Find Out More →</a></div>
-    <div class="discover-card"><div class="dname">Corporate Events</div><a class="dlink" href="#">Find Out More →</a></div>
-    <div class="discover-card"><div class="dname">Food &amp; Drink</div><a class="dlink" href="#">Find Out More →</a></div>
-    <div class="discover-card"><div class="dname">Membership</div><a class="dlink" href="#">Find Out More →</a></div>
+  <div class="feature-strip">
+    <div class="feature"><div class="dot">📍</div><div><div class="ftitle">38 Tracks Nationwide</div><div class="fsub">UK's largest indoor karting company</div></div></div>
+    <div class="feature"><div class="dot">⭐</div><div><div class="ftitle">4.5/5 Average Review</div><div class="fsub">50,000+ reviews every year</div></div></div>
+    <div class="feature"><div class="dot">🎉</div><div><div class="ftitle">Perfect For Parties</div><div class="fsub">Birthdays | Corporate | Stag &amp; Hen</div></div></div>
+    <div class="feature"><div class="dot">🏁</div><div><div class="ftitle">Race Like A Pro</div><div class="fsub">State-of-the-art tracks</div></div></div>
   </div>
 </section>
 
 <footer>
-  <div class="footer-grid">
-    <div>
-      <h5>TeamSport Experiences</h5>
-      <ul>
-        <li><a href="#">Go Karting</a></li>
-        <li><a href="#">Combat Karts</a></li>
-        <li><a href="#">Mini Racers</a></li>
-        <li><a href="#">Bowling</a></li>
-        <li><a href="#">Laser Combat</a></li>
-        <li><a href="#">Mini Golf</a></li>
-        <li><a href="#">Sixes Social Cricket</a></li>
-        <li><a href="#">Membership</a></li>
-        <li><a href="#">Race Academy Lessons (8–15 yrs)</a></li>
-        <li><a href="#">Girls Karting Academy</a></li>
-      </ul>
-    </div>
-    <div>
-      <h5>Discover More</h5>
-      <ul>
-        <li><a href="#">Food &amp; Drinks</a></li>
-        <li><a href="#">Gift Vouchers</a></li>
-        <li><a href="#">Parties and Events</a></li>
-        <li><a href="#">Corporate</a></li>
-        <li><a href="#">Kids Parties</a></li>
-        <li><a href="#">Stag &amp; Hen</a></li>
-        <li><a href="#">Offers</a></li>
-        <li><a href="#">Student Discount</a></li>
-        <li><a href="#">NHS &amp; Forces Discount</a></li>
-      </ul>
-    </div>
-    <div>
-      <h5>Who We Are</h5>
-      <ul>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Careers</a></li>
-        <li><a href="#">FAQs</a></li>
-        <li><a href="#">Charity</a></li>
-        <li><a href="#">Sustainability</a></li>
-        <li><a href="#">News</a></li>
-        <li><a href="#">Blog</a></li>
-        <li><a href="#">Newsletter Sign Up</a></li>
-        <li><a href="#">Press Contact</a></li>
-      </ul>
-    </div>
-    <div>
-      <h5>Follow Us</h5>
-      <ul>
-        <li><a href="#">Facebook</a></li>
-        <li><a href="#">Instagram</a></li>
-        <li><a href="#">TikTok</a></li>
-        <li><a href="#">YouTube</a></li>
-        <li><a href="#">X</a></li>
-        <li><a href="#">LinkedIn</a></li>
-        <li><a href="#">Tripadvisor</a></li>
-        <li><a href="#">Download the App</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    Find Your Nearest Track › &nbsp;|&nbsp; Call us 01252 732300 or Contact Us<br>
-    Terms and Conditions | Privacy Policy | Cookie Policy<br>
-    © 2026 TeamSport (demo) — TeamSport Support Office (Staff Only), C1 Endeavour Place, Coxbridge Business Park, Alton Road, Farnham, Surrey GU10 5EH<br>
-    TeamSport is a trading name of Go Karting For Fun Ltd. Registered in England No. 05030696.
-  </div>
+  © 2026 TeamSport — simulated page for internal agent training purposes only
 </footer>
 
 <script>
-  const editBookingBtn = document.getElementById('editBookingBtn');
-  const editBookingModal = document.getElementById('editBookingModal');
-  const closeEditBookingBtn = document.getElementById('closeEditBookingBtn');
-  editBookingBtn.addEventListener('click', () => { editBookingModal.style.display = 'flex'; });
-  closeEditBookingBtn.addEventListener('click', () => { editBookingModal.style.display = 'none'; });
-  editBookingModal.addEventListener('click', (e) => { if (e.target === editBookingModal) editBookingModal.style.display = 'none'; });
+const scenarios = [
+  {
+    id: 1,
+    tab: "01 · Booking amendment",
+    title: "Existing booking amendment — Farnborough",
+    channel: "Live Chat · Sales Team",
+    customer: { name: "Andrew Smith", phone: "07873 616744", email: "andrew718smith@gmail.com" },
+    context: [
+      { label: "Venue", value: "Farnborough" },
+      { label: "Booking date", value: "This Saturday" },
+      { label: "Request", value: "Reduce number of drivers on an existing booking" },
+      { label: "Reference", value: "Customer has provided a booking reference" }
+    ],
+    opening: "We have fewer people coming now. Can you reduce the booking from the original number of drivers, and can I get my money back?",
+    tip: "Check the booking reference, confirm the new driver count, and explain TeamSport's amendment/refund policy for reduced numbers before processing.",
+    type: "booking",
+    system: {
+      reference: "TS-FNB-48213",
+      venue: "Farnborough",
+      date: "Saturday 31 Oct 2026",
+      time: "14:00",
+      sessionType: "Ultimate Race Experience",
+      originalDrivers: 10,
+      amendedDrivers: 6,
+      pricePerDriver: 35.00,
+      paymentStatus: "Paid in full · Card ending 4471",
+      bookingStatus: "Amendment requested"
+    }
+  },
+  {
+    id: 2,
+    tab: "02 · Kids party enquiry",
+    title: "General sales enquiry — Kids Party",
+    channel: "Web Enquiry Form · Sales Team",
+    customer: { name: "Andrew Smith", phone: "07873 616744", email: "andrew718smith@gmail.com" },
+    context: [
+      { label: "Children", value: "8–10 children, ages 8–12" },
+      { label: "Timing", value: "Sometime in November" },
+      { label: "Needs", value: "Karting + food package pricing" },
+      { label: "Stage", value: "Deciding on a date once she has pricing" }
+    ],
+    opening: "I'm looking for a karting party in November for between 8–10 children aged 8–12. What karting and food packages do you offer and how much is it?",
+    tip: "Share available party/karting packages and food options for that age group, give indicative pricing for 8–10 children, and offer to check specific November dates.",
+    type: "party",
+    system: {
+      reference: "TS-QUOTE-91027",
+      venue: "To be confirmed",
+      date: "November 2026 (date TBC)",
+      children: "9 children (ages 8–12)",
+      status: "quote",
+      karting: [
+        { name: "Mini Racers Party Package", desc: "2 x karting sessions, age 8+, includes trophy presentation", price: "£22.99 pp" },
+        { name: "Junior Grand Prix Package", desc: "Qualifying + Grid Start race, podium presentation", price: "£26.99 pp" }
+      ],
+      food: [
+        { name: "Pizza & Juice Party Box", desc: "Pizza slices, juice carton, snack", price: "£9.50 pp" },
+        { name: "Hot Dog & Drink Package", desc: "Hot dog, drink, dessert", price: "£8.50 pp" },
+        { name: "Sharing Party Platter", desc: "Mixed sharing platter for the group", price: "£60.00 flat" }
+      ]
+    }
+  },
+  {
+    id: 3,
+    tab: "03 · Voucher T&Cs",
+    title: "Voucher terms & conditions",
+    channel: "Email · Customer Service",
+    customer: { name: "Andrew Smith", phone: "07873 616744", email: "andrew718smith@gmail.com" },
+    context: [
+      { label: "Item", value: "TeamSport voucher" },
+      { label: "Need", value: "Confirm terms & conditions before booking" },
+      { label: "Question", value: "When can the voucher be used?" }
+    ],
+    opening: "Can you confirm the terms and conditions of my voucher and when I can use it?",
+    tip: "Confirm validity period, which venues/experiences it covers, and any blackout dates — ask for the voucher code if you need to check specifics.",
+    type: "voucher",
+    system: {
+      vouchers: [
+        { name: "Race Experience Voucher", desc: "Single Ultimate Race Experience session, any UK venue", price: "£35.00", code: "e.g. TSRACE-XXXXXX" },
+        { name: "Open Value Gift Card", desc: "Redeemable against any experience or food & drink", price: "£25 / £50 / £100", code: "e.g. TSGIFT-XXXXXX" },
+        { name: "Kids Party Voucher", desc: "Covers karting session, valid for party bookings", price: "From £22.99 pp", code: "e.g. TSPARTY-XXXXXX" },
+        { name: "Membership Voucher", desc: "3 or 6 month TeamSport membership", price: "From £19.99 /mo", code: "e.g. TSMEM-XXXXXX" }
+      ],
+      terms: [
+        "Valid for 12 months from the date of purchase, unless otherwise stated on the voucher.",
+        "Bookings must be made in advance online or by phone — subject to track availability.",
+        "Vouchers cannot be exchanged, refunded or redeemed for cash, in full or in part.",
+        "Valid at all participating TeamSport UK venues unless the voucher specifies a single location.",
+        "One voucher may be redeemed per booking unless the voucher states otherwise.",
+        "Lost, stolen or expired vouchers cannot be replaced or extended.",
+        "Vouchers cannot be combined with other offers, discounts or promotions."
+      ]
+    }
+  }
+];
+
+let current = scenarios[0];
+
+function renderTabs(){
+  const wrap = document.getElementById('scenarioTabs');
+  wrap.innerHTML = '';
+  scenarios.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'scenario-tab' + (s.id === current.id ? ' active' : '');
+    btn.textContent = s.tab;
+    btn.onclick = () => { current = s; renderAll(); };
+    wrap.appendChild(btn);
+  });
+}
+
+function renderContext(){
+  const panel = document.getElementById('contextPanel');
+  const customerBlock = current.customer ?
+    '<div class="customer-card">' +
+      '<span class="label">Customer</span>' +
+      '<div class="customer-name">' + current.customer.name + '</div>' +
+      '<div class="customer-line">📞 ' + current.customer.phone + '</div>' +
+      '<div class="customer-line">✉️ ' + current.customer.email + '</div>' +
+    '</div>' : '';
+  panel.innerHTML = '<span class="badge">' + current.channel + '</span><h3>' + current.title + '</h3>' +
+    customerBlock +
+    current.context.map(c => '<div class="context-row"><span class="label">' + c.label + '</span>' + c.value + '</div>').join('') +
+    '<div class="context-row" style="margin-top:4px;"><span class="label">Customer message</span><em>&ldquo;' + current.opening + '&rdquo;</em></div>' +
+    '<div class="context-row"><span class="label">Resolution tip</span>' + current.tip + '</div>';
+}
+
+function money(n){ return '£' + n.toFixed(2); }
+
+function renderBookingSystem(s){
+  const sys = s.system;
+  const originalTotal = sys.originalDrivers * sys.pricePerDriver;
+  const amendedTotal = sys.amendedDrivers * sys.pricePerDriver;
+  const refund = originalTotal - amendedTotal;
+  return '' +
+    '<div class="system-head"><span>Booking Management System</span><span class="sys-tag">Record ' + sys.reference + '</span></div>' +
+    '<div class="system-body">' +
+      '<div class="record-grid">' +
+        recordField('Venue', sys.venue) +
+        recordField('Date & time', sys.date + ' · ' + sys.time) +
+        recordField('Session type', sys.sessionType) +
+        recordField('Payment status', sys.paymentStatus) +
+        recordField('Original drivers', sys.originalDrivers) +
+        recordField('Status', '<span class="status-pill pending">' + sys.bookingStatus + '</span>', true) +
+      '</div>' +
+      '<table class="amend-table">' +
+        '<thead><tr><th></th><th class="num">Drivers</th><th class="num">Price / driver</th><th class="num">Total</th></tr></thead>' +
+        '<tbody>' +
+          '<tr><td>Original booking</td><td class="num">' + sys.originalDrivers + '</td><td class="num">' + money(sys.pricePerDriver) + '</td><td class="num">' + money(originalTotal) + '</td></tr>' +
+          '<tr><td>Amended booking</td><td class="num">' + sys.amendedDrivers + '</td><td class="num">' + money(sys.pricePerDriver) + '</td><td class="num">' + money(amendedTotal) + '</td></tr>' +
+          '<tr class="total"><td colspan="3">Refund due to customer</td><td class="num">' + money(refund) + '</td></tr>' +
+        '</tbody>' +
+      '</table>' +
+      '<div class="refund-banner">💳 Refund of ' + money(refund) + ' due back to the original payment card once amendment is confirmed.</div>' +
+      '<div class="action-row">' +
+        '<button class="btn-primary">Confirm amendment &amp; process refund</button>' +
+        '<button class="btn-outline">View full booking history</button>' +
+      '</div>' +
+    '</div>';
+}
+
+function recordField(label, value, raw){
+  return '<div class="record-field"><span class="label">' + label + '</span><span class="value">' + value + '</span></div>';
+}
+
+function renderPartySystem(s){
+  const sys = s.system;
+  return '' +
+    '<div class="system-head"><span>Booking Management System</span><span class="sys-tag">Quote ' + sys.reference + '</span></div>' +
+    '<div class="system-body">' +
+      '<div class="record-grid">' +
+        recordField('Venue', sys.venue) +
+        recordField('Requested date', sys.date) +
+        recordField('Party size', sys.children) +
+        recordField('Status', '<span class="status-pill quote">Quote — awaiting date confirmation</span>') +
+      '</div>' +
+      '<h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--navy-text);margin:18px 0 10px;">Karting packages</h3>' +
+      sys.karting.map(pkgRow).join('') +
+      '<h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--navy-text);margin:18px 0 10px;">Food packages</h3>' +
+      sys.food.map(pkgRow).join('') +
+      '<div class="action-row">' +
+        '<button class="btn-primary">Send quote to customer</button>' +
+        '<button class="btn-outline">Check November availability</button>' +
+      '</div>' +
+    '</div>';
+}
+
+function pkgRow(p){
+  return '<div class="package-card"><div><div class="pname">' + p.name + '</div><div class="pdesc">' + p.desc + '</div></div><div class="pprice">' + p.price + '</div></div>';
+}
+
+function renderVoucherSystem(s){
+  const sys = s.system;
+  return '' +
+    '<div class="system-head"><span>Voucher Catalogue &amp; Terms</span><span class="sys-tag">Customer Service</span></div>' +
+    '<div class="system-body">' +
+      '<h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--navy-text);margin:0 0 12px;">Possible vouchers on this account</h3>' +
+      '<div class="voucher-grid">' +
+        sys.vouchers.map(v =>
+          '<div class="voucher-card"><div class="vname">' + v.name + '</div><div class="vdesc">' + v.desc + '</div><div class="vprice">' + v.price + '</div><div class="vcode">' + v.code + '</div></div>'
+        ).join('') +
+      '</div>' +
+      '<h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--navy-text);margin:0 0 6px;">Standard voucher terms &amp; conditions</h3>' +
+      '<ul class="tc-list">' + sys.terms.map(t => '<li>' + t + '</li>').join('') + '</ul>' +
+      '<div class="tc-note">Example T&amp;Cs for demo purposes — confirm exact wording and the specific voucher code against TeamSport\'s live terms before advising the customer.</div>' +
+    '</div>';
+}
+
+function renderSystemPanel(){
+  const panel = document.getElementById('systemPanel');
+  if (current.type === 'booking') panel.innerHTML = renderBookingSystem(current);
+  else if (current.type === 'party') panel.innerHTML = renderPartySystem(current);
+  else if (current.type === 'voucher') panel.innerHTML = renderVoucherSystem(current);
+}
+
+function renderAll(){
+  renderTabs();
+  renderContext();
+  renderSystemPanel();
+}
+
+renderAll();
 </script>
 
 </body>
