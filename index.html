@@ -512,6 +512,67 @@
     font-size:13.5px;
     line-height:1.6;
   }
+
+  /* ---- Contact us form ---- */
+  .contact-form{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:28px;
+    max-width:620px;
+  }
+  .contact-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  .contact-field{ margin-bottom:18px; }
+  .contact-field label{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    color:var(--navy-text);
+    margin-bottom:6px;
+  }
+  .contact-field input, .contact-field textarea{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    font-size:13.5px;
+    font-family:inherit;
+  }
+  .contact-field textarea{ min-height:110px; resize:vertical; }
+  .contact-submit{
+    background:var(--pink);
+    color:#fff;
+    border:none;
+    padding:12px 26px;
+    font-size:14px;
+    font-weight:700;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .contact-submit:hover{ background:#c11257; }
+  .contact-note{
+    margin-top:16px;
+    font-size:12px;
+    color:#666;
+    background:var(--grey-bg);
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:12px 14px;
+    line-height:1.5;
+  }
+  .contact-note code{
+    background:#e9edf1;
+    padding:2px 5px;
+    border-radius:3px;
+    font-size:11.5px;
+  }
+  @media (max-width:600px){
+    .contact-row{ grid-template-columns:1fr; }
+  }
 </style>
 </head>
 <body>
@@ -551,15 +612,16 @@
         <button id="simulateCallBtn">Simulate incoming call (queue: Jeremy_Q)</button>
         <button id="simulateOtherQueueBtn">Simulate call on another queue</button>
         <button id="togglePayloadBtn">View incoming payload</button>
+        <button id="resetWidgetBtn">Reset widget</button>
       </div>
     </div>
-    <div id="queueStatus"><span class="label" style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.3px;">No call in progress</span></div>
+    <div id="queueStatus"><span class="label" style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.3px;">Waiting for a call on queue Jeremy_Q…</span></div>
     <div class="payload-box" id="payloadBox"><pre id="payloadPre">Waiting for a SYSTEM_INCOMING_CALL event…</pre></div>
     <div class="wab-note">Wired to the Puzzel Widget API: subscribes to <code>SYSTEM_INCOMING_CALL</code> and reads <code>vars.system_queue_key</code> from the payload. When it matches queue <strong>Jeremy_Q</strong>, this widget automatically loads the mapped scenario below — the same mechanism extends to any other queue by adding it to the queue→scenario map in code.</div>
   </div>
 
   <div id="noMatchMessage" class="wab-no-match">
-    This widget only shows content for calls on queue <strong>Jeremy_Q</strong>. It stays hidden for any other queue, and for the ones above it hasn't been wired to.
+    Waiting for a call on queue <strong>Jeremy_Q</strong>… This widget only shows content for that queue and stays hidden for any other.
   </div>
 
   <div id="scenarioContent" style="display:none;">
@@ -570,6 +632,46 @@
       <div class="system-panel" id="systemPanel"></div>
     </div>
   </div>
+</section>
+
+<section class="sim-section" id="contactSection">
+  <div class="sim-header">
+    <h2>Contact Us</h2>
+    <p>Have a question? Send us a message and our team will get back to you.</p>
+  </div>
+
+  <form id="contactForm" class="contact-form" action="https://formsubmit.co/info@salesuk.cm.puzzel.com" method="POST">
+    <!-- FormSubmit configuration fields: no account or API key needed, just these hidden inputs -->
+    <input type="hidden" name="_subject" value="TeamSport website enquiry">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+
+    <div class="contact-row">
+      <div class="contact-field">
+        <label for="contactName">Your name</label>
+        <input type="text" id="contactName" name="name" required>
+      </div>
+      <div class="contact-field">
+        <label for="contactEmail">Your email</label>
+        <input type="email" id="contactEmail" name="email" required>
+      </div>
+    </div>
+    <div class="contact-field">
+      <label for="contactPhone">Phone number (optional)</label>
+      <input type="tel" id="contactPhone" name="phone">
+    </div>
+    <div class="contact-field">
+      <label for="contactMessage">Your message</label>
+      <textarea id="contactMessage" name="message" required></textarea>
+    </div>
+    <button type="submit" class="contact-submit">Send Message</button>
+    <div class="contact-note">
+      Clicking <strong>Send Message</strong> submits this form directly to <code>info@salesuk.cm.puzzel.com</code>
+      using FormSubmit, a free email-forwarding service — no mail app opens and no account or API key is needed
+      on our side. The first time a message is sent, FormSubmit asks that inbox to confirm it via a one-off
+      activation email; after that, submissions arrive automatically.
+    </div>
+  </form>
 </section>
 
 <section class="hero">
@@ -977,7 +1079,21 @@ document.getElementById('togglePayloadBtn').addEventListener('click', () => {
   btn.textContent = box.classList.contains('open') ? 'Hide incoming payload' : 'View incoming payload';
 });
 
+document.getElementById('resetWidgetBtn').addEventListener('click', () => {
+  document.getElementById('scenarioContent').style.display = 'none';
+  const noMatch = document.getElementById('noMatchMessage');
+  noMatch.innerHTML = 'Waiting for a call on queue <strong>' + TARGET_QUEUE_KEY + '</strong>… This widget only shows content for that queue and stays hidden for any other.';
+  noMatch.style.display = '';
+  document.getElementById('queueStatus').innerHTML = '<span class="label" style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.3px;">Waiting for a call on queue ' + TARGET_QUEUE_KEY + '…</span>';
+  document.getElementById('payloadPre').textContent = 'Waiting for a SYSTEM_INCOMING_CALL event…';
+  document.getElementById('payloadBox').classList.remove('open');
+  document.getElementById('togglePayloadBtn').textContent = 'View incoming payload';
+});
+
 initWidgetApi();
+
+/* Contact form submits natively via its action="https://formsubmit.co/..." POST —
+   no JS handler needed; FormSubmit receives the POST and relays it by email. */
 </script>
 
 </body>
